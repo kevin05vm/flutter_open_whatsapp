@@ -19,30 +19,24 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 /** FlutterOpenWhatsappPlugin */
 public class FlutterOpenWhatsappPlugin implements FlutterPlugin, MethodCallHandler {
 
-  Activity context;
-  MethodChannel methodChannel;
+  private MethodChannel channel;
+  private MixpanelAPI mixpanel;
+  private Context context;
 
-  private static final String DEBUG_NAME = "FlutterPluginTest";
-  private static final String MESSAGE_CHANNEL = "flutter_plugin_test/message";
+  public FlutterOpenWhatsappPlugin() {
+  }
+
+  public FlutterOpenWhatsappPlugin(Context context) {
+      this.context = context;
+  }
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-    Log.d(DEBUG_NAME, " onAttachedToEngine");
-    setupChannels(flutterPluginBinding.getFlutterEngine().getDartExecutor(), flutterPluginBinding.getApplicationContext());
+    channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_open_whatsapp");
+    context = flutterPluginBinding.getApplicationContext();
+    channel.setMethodCallHandler(this);
   }
 
-  public static void registerWith(Registrar registrar) {
-    Log.d(DEBUG_NAME, " registerWith");
-    FlutterOpenWhatsappPlugin plugin = new FlutterOpenWhatsappPlugin();
-    plugin.setupChannels(registrar.messenger(), registrar.context());
-  }
-  private void setupChannels(BinaryMessenger messenger, Context context) {
-    Log.d(DEBUG_NAME, "setupChannels");
-    this.context = context;
-    this.activity = null;
-    methodChannel = new MethodChannel(messenger, MESSAGE_CHANNEL);
-    methodChannel.setMethodCallHandler(this);
-  }
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     Log.d(DEBUG_NAME, "onMethodCall" + " - " + call.method.toString());
@@ -74,6 +68,7 @@ public class FlutterOpenWhatsappPlugin implements FlutterPlugin, MethodCallHandl
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+      channel.setMethodCallHandler(null);
   }
 
   /** Plugin registration. */
