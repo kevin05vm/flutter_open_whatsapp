@@ -1,6 +1,7 @@
 package infozenplus.com.flutter_open_whatsapp;
 
 import android.content.Intent;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
@@ -20,7 +21,6 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public class FlutterOpenWhatsappPlugin implements FlutterPlugin, MethodCallHandler {
 
   private MethodChannel channel;
-  private MixpanelAPI mixpanel;
   private Context context;
 
   public FlutterOpenWhatsappPlugin() {
@@ -39,7 +39,6 @@ public class FlutterOpenWhatsappPlugin implements FlutterPlugin, MethodCallHandl
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    Log.d(DEBUG_NAME, "onMethodCall" + " - " + call.method.toString());
     if (call.method.equals("getPlatformVersion")) {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
     } 
